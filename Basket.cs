@@ -4,11 +4,10 @@ namespace Module2HW2
 {
     class Basket
     {
-        private static Basket instance = null;
-        private static readonly object padlock = new object();
-        private static readonly List<Product> ProductsInBasket = new List<Product>();
-        Basket()
+        private readonly List<Product> ProductsInBasket;
+        public Basket()
         {
+            ProductsInBasket = new List<Product>();
         }
         public decimal TotalPrice
         {
@@ -20,20 +19,6 @@ namespace Module2HW2
                     sum += item.Price;
                 }
                 return sum;
-            }
-        }
-        public static Basket Instance
-        {
-            get
-            {
-                lock (padlock)
-                {
-                    if (instance == null)
-                    {
-                        instance = new Basket();
-                    }
-                    return instance;
-                }
             }
         }
         public List<Product> GetProducts()

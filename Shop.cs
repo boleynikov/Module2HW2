@@ -8,12 +8,12 @@ namespace Module2HW2
 {
     static class Shop
     {
-        public static void OpenBasket()
+        public static void OpenBasket(Basket basket)
         {
             Console.Clear();
             Console.WriteLine("Ваша корзина:");
-            ShowGoods(Basket.Instance.GetProducts());
-            Console.WriteLine(" {0,4} | {1,19}  | {2,7} |", "", "Сумма заказа", Basket.Instance.TotalPrice);
+            ShowGoods(basket.GetProducts());
+            Console.WriteLine(" {0,4} | {1,19}  | {2,7} |", "", "Сумма заказа", basket.TotalPrice);
             Console.WriteLine("Нажмите Escape - что бы вернуться");
             Console.WriteLine("     Backspace - что бы оформить заказ");
             switch (Console.ReadKey().Key)
@@ -21,24 +21,24 @@ namespace Module2HW2
                 case ConsoleKey.Escape:
                     return;
                 case ConsoleKey.Backspace:
-                    CreateOrder();
+                    CreateOrder(basket);
                     break;
             }
         }
-        public static void CreateOrder()
+        public static void CreateOrder(Basket basket)
         {
-            if (Basket.Instance.GetProducts().Count == 0)
+            if (basket.GetProducts().Count == 0)
             {
                 Console.WriteLine("Вы ещё не выбрали товар в корзину\nНажмите Enter");
                 Console.ReadLine();
                 return;
             }
             Order order = new Order();
-            Storage.TransferFromBasketToOrder(Basket.Instance, order);
-            ShowOrder(order);
-            Basket.Instance.ClearBasket();
+            Storage.TransferFromBasketToOrder(basket, order);
+            ShowOrder(order, basket);
+            basket.ClearBasket();
         }
-        public static void ShowOrder(Order order)
+        public static void ShowOrder(Order order, Basket basket)
         {
             var products = order.GetProducts();
             Console.Clear();
@@ -47,7 +47,7 @@ namespace Module2HW2
             {
                 Console.WriteLine(" | {0,19}  | {1,7} шт.|", item.Key.Name, item.Value);
             }
-            Console.WriteLine(" | {0,19}  | {1,7}    |", "Сумма", Basket.Instance.TotalPrice);
+            Console.WriteLine(" | {0,19}  | {1,7}    |", "Сумма", basket.TotalPrice);
             Console.WriteLine("Нажмите Enter");
             Console.ReadLine();
         }
@@ -59,7 +59,7 @@ namespace Module2HW2
                 Console.WriteLine(" {0,4}.| {1,19}  | {2,7} |", i, list[i].Name, list[i].Price);
             }
         }
-        public static void ChooseGoods(List<Product> products)
+        public static void ChooseGoods(List<Product> products, Basket basket)
         {
             string str = Console.ReadLine();
             if (String.IsNullOrWhiteSpace(str))
@@ -82,7 +82,7 @@ namespace Module2HW2
                 }
                 else
                 {
-                    Basket.Instance.AddProduct(products[numProduct]);
+                    basket.AddProduct(products[numProduct]);
 
                     Console.BackgroundColor = ConsoleColor.Green;
                     Console.WriteLine("Товар добавлен в корзину");
